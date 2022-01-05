@@ -1,19 +1,21 @@
 from typing import Union
 import math, logging
 
-logger = logging.getLogger("LOGGER")
-file_handler = logging.FileHandler("dvidesimtos_uzduoties_logai.log", encoding="UTF-8")
-logger.addHandler(file_handler)
-logger.setLevel(logging.DEBUG)
+def create_logger() -> logging.Logger:
+    logger = logging.getLogger("LOGGER")
+    logger.setLevel(logging.DEBUG)
 
-formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s")
-file_handler.setFormatter(formatter)
+    formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s")
 
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(formatter)
-logger.addHandler(stream_handler)
+    file_handler = logging.FileHandler("dvidesimtos_uzduoties_logai.log", encoding="UTF-8")
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
 
-logger.info("LOG")
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+
+    return logger
 
 def get_amount(*args: Union[int, float]) -> Union[int, float]:
     numbers = [*args]
@@ -22,7 +24,7 @@ def get_amount(*args: Union[int, float]) -> Union[int, float]:
     return amount
 
 
-def get_root_from_number(number: Union[int, float]) -> Union[int, float]:
+def get_root_from_number(number: Union[int, float]) -> Union[int, float, None]:
     try:
         root = math.sqrt(number)
     except TypeError as e:
@@ -36,7 +38,7 @@ def get_sentence_length(sentence: str) -> Union[int, float]:
     logger.info(f"Sakinį sudaro {sentence_length} simboliai")
     return sentence_length
 
-def division(a: Union[int, float], b: Union[int, float]) -> Union[int, float]:
+def division(a: Union[int, float], b: Union[int, float]) -> Union[int, float, None]:
     try:
         quotient = a / b
     except ZeroDivisionError as e:
@@ -45,9 +47,21 @@ def division(a: Union[int, float], b: Union[int, float]) -> Union[int, float]:
         logger.info(f"Skaičių {a} padalinus iš skaičiaus {b} dalmuo yra: {quotient}")
         return quotient
 
+def main():
+    amount = get_amount(15, 10, 6, 89)
+    root = get_root_from_number(81)
+    sentence_length = get_sentence_length("cia yra net 24 simboliai")
+    quotient = division(72, 9)
+    results = f"""
+    suma = {amount}
+    šaknis = {root}
+    simbolių kiekis sakinyje = {sentence_length}
+    dalmuo = {quotient}
+    """
+    return results
+
 if __name__ == '__main__':
-    get_amount(15, 10, 6, 89)
-    get_root_from_number("81")
-    get_sentence_length("cia yra net 24 simboliai")
-    division(72, 0)
+    logger = create_logger()
+    logger.info("LOG")
+    main()
 
